@@ -22,6 +22,14 @@ add_library(rpcs3_emu STATIC
     Io/SkylanderPortalIPC_config.cpp
 )
 
+# Homebrew packages can export /opt/homebrew/include, which contains Homebrew's own
+# protobuf headers. Make sure the bundled protobuf headers always win.
+if(APPLE)
+    target_include_directories(rpcs3_emu SYSTEM BEFORE PRIVATE
+        ${CMAKE_SOURCE_DIR}/3rdparty/protobuf/protobuf/src
+        ${CMAKE_SOURCE_DIR}/3rdparty/protobuf/protobuf/third_party/utf8_range)
+endif()
+
 if(USE_LTO)
     set_target_properties(rpcs3_emu PROPERTIES INTERPROCEDURAL_OPTIMIZATION ON)
 endif()
